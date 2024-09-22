@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace CourseWork.Models
+public class AppUser : IdentityUser
 {
-    public class AppUser : IdentityUser
-    {
-        public string Occupation { get; set; }
-    }
+    public string Occupation { get; set; }
+    public bool IsBlocked { get; set; }
+    public bool HasPasswordRestrictions { get; set; }
 }

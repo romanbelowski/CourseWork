@@ -1,0 +1,36 @@
+﻿@using CourseWork.Models
+@using CourseWork.Models.ViewModels
+@model AppUser
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<h1>Edit User</h1>
+
+<form asp-action="EditUser">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="UserName" class="control-label"></label>
+        <input asp-for="UserName" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" readonly />
+    </div>
+    <div class="form-check">
+        <input asp-for="IsBlocked" class="form-check-input" />
+        <label asp-for="IsBlocked" class="form-check-label">Is Blocked</label>
+    </div>
+    <div class="form-check">
+        <input asp-for="HasPasswordRestrictions" class="form-check-input" />
+        <label asp-for="HasPasswordRestrictions" class="form-check-label">Has Password Restrictions</label>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="UserList">Back to List</a>
+</div>
