@@ -1,34 +1,65 @@
 ﻿@model LoginViewModel
-
 @{
-        ViewData["Title"] = "Login";
+    ViewData["Title"] = "Login";
 }
-
 <h1>Login</h1>
-
 <hr />
 <div class="row">
-        <div class="col-12">
-                <form asp-action="Login">
-                        <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="col-12">
+        <form id="loginForm" asp-action="Login">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" type="password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
 
-                        <div class="form-group">
-                                <label asp-for="UserName" class="control-label"></label>
-                                <input asp-for="UserName" class="form-control" />
-                                <span asp-validation-for="UserName" class="text-danger"></span>
-                        </div>
+            <input type="hidden" asp-for="ReturnUrl" />
 
-                        <div class="form-group">
-                                <label asp-for="Password" class="control-label"></label>
-                                <input asp-for="Password" class="form-control" />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                        
-                        <input type="hidden" asp-for="ReturnUrl" />
+            <div class="g-recaptcha" data-sitekey="@ViewData["RecaptchaSiteKey"]"></div>
 
-                        <div class="form-group">
-                                <button class="btn btn-primary mt-2">Log in</button>
-                        </div>
-                </form>
-        </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary mt-2">Log in</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var response = grecaptcha.getResponse();
+            if (response.length === 0) {
+                alert('Please complete the reCAPTCHA');
+                return false;
+            }
+
+            fetch('/api/Captcha/Verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(response)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data === true) {
+                        this.submit();
+                    } else {
+                        alert('reCAPTCHA verification failed. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+        });
+    </script>
+}

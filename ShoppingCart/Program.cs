@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +35,8 @@ builder.Services.AddScoped<PasswordValidationService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-
+// Add HttpClient to the container.
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
