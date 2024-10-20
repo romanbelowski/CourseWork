@@ -13,12 +13,17 @@ namespace CourseWork.Controllers
         private UserManager<AppUser> _userManager;
         private SignInManager<AppUser> _signInManager;
         private PasswordValidationService _passwordValidationService;
+        private readonly IConfiguration _configuration;
 
-        public AccountController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, PasswordValidationService passwordValidationService)
+        public AccountController(SignInManager<AppUser> signInManager,
+                         UserManager<AppUser> userManager,
+                         PasswordValidationService passwordValidationService,
+                         IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _passwordValidationService = passwordValidationService;
+            _configuration = configuration;
         }
 
         public IActionResult Create() => View();
@@ -66,8 +71,12 @@ namespace CourseWork.Controllers
             return View(user);
         }
 
-        public IActionResult Login(string returnUrl) => View(new LoginViewModel { ReturnUrl = returnUrl });
-
+        // Login methods
+        public IActionResult Login(string returnUrl)
+        {
+            ViewData["RecaptchaSiteKey"] = _configuration["RecaptchaSettings:SiteKey"];
+            return View(new LoginViewModel { ReturnUrl = returnUrl });
+        }
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginVM)
         {
@@ -98,6 +107,8 @@ namespace CourseWork.Controllers
                     Log.Warning("Failed login attempt for user {UserName}", loginVM.UserName);
                 }
             }
+
+            ViewData["RecaptchaSiteKey"] = _configuration["RecaptchaSettings:SiteKey"];
             return View(loginVM);
         }
 
